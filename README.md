@@ -9,8 +9,54 @@ I integrated `connect-redis` with Express.js to store session data in Redis, an 
 
 This integration led to efficient session management, enhancing application performance and scalability. Utilizing Redis allowed for centralized session storage, facilitating seamless scaling across multiple servers and improving the overall user experience.
 
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- You have installed Node.js and npm.
+- You have a Redis server up and running.
+- You have basic knowledge of Express.js and Redis.
+
 ## Usage
-lorem ipsum ...
+
+```sh
+npm install
+nodemon index.js
+```
+
+## Test (Postman/Insomnia/curl)
+
+1. **Create a User:**
+    - Open Postman and create a new POST request.
+    - Set the URL to `http://localhost:3000/register`.
+    - In the request body, select `raw` and `JSON` format, then add the following JSON data:
+      ```json
+      {
+         "username": "yourUsername",
+         "password": "yourPassword"
+      }
+      ```
+    - Send the request to create a new user.
+
+2. **Log in the User:**
+    - Create a new POST request in Postman.
+    - Set the URL to `http://localhost:3000/login`.
+    - In the request body, select `raw` and `JSON` format, then add the following JSON data:
+      ```json
+      {
+         "username": "yourUsername",
+         "password": "yourPassword"
+      }
+      ```
+    - Send the request to log in the user. This should set a session cookie in Postman.
+
+3. **Access the Protected Route (Dashboard):**
+    - Create a new GET request in Postman.
+    - Set the URL to `http://localhost:3000/dashboard`.
+    - Ensure the session cookie from the login step is included in the request.
+    - Send the request to access the protected route.
+
+By following these steps, you can use Postman to create a user, log in, and access a protected route in your application.
 
 ## Suggestions for Improvement
 
