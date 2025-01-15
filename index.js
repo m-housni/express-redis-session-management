@@ -32,6 +32,10 @@ const users = []
 // Register route
 app.post('/register', async (req, res) => {
     const { username, password } = req.body
+    const userExists = users.find(u => u.username === username)
+    if (userExists) {
+        return res.status(400).send('User already registered')
+    }
     const hashedPassword = await bcrypt.hash(password, 10)
     users.push({ username, password: hashedPassword })
     res.send('User registered')
