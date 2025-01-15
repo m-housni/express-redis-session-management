@@ -49,6 +49,12 @@ app.post('/login', async (req, res) => {
     }
 })
 
+// Logout route
+app.post('/logout', (req, res) => {
+    req.session.destroy()
+    res.send('Logged out')
+})
+
 // Middleware to protect routes
 function authMiddleware(req, res, next) {
     if (req.session.userId) {
