@@ -19,12 +19,17 @@ const app = express()
 
 app.use(express.json())
 app.use(
-  session({
-    store: redisStore,
-    resave: false, // required: force lightweight session keep alive (touch)
-    saveUninitialized: false, // recommended: only save session when data exists
-    secret: "my-secret-key",
-  }),
+    session({
+        store: redisStore,
+        resave: false, // required: force lightweight session keep alive (touch)
+        saveUninitialized: false, // recommended: only save session when data exists
+        secret: "my-secret-key",
+        cookie: {
+            secure: false, // ensures the browser only sends the cookie over HTTPS
+            httpOnly: true, // ensures the cookie is sent only over HTTP(S), not client JavaScript
+            maxAge: 1000 * 60 * 60 * 24, // cookie expiry: 1 day
+        },
+    }),
 )
 
 const users = []
