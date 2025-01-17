@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  redis:
+    container_name: express-redis-session-management-redis
+    image: "redis/redis-stack"
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf
+      - ./data:/data
+    command: ["redis-server", "/etc/redis/redis.conf"]
+      
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  node:
+    container_name: express-redis-session-management-node
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm run load all && npm run dev"
+    depends_on:
+      - redis
+    ports:
+      - 8081:8081
