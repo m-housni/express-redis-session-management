@@ -20,7 +20,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: sh -c "npm run load all && npm run dev"
+    command: sh -c "npm run start"
     depends_on:
       - redis
     ports:
