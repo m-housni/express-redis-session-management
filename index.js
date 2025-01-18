@@ -5,6 +5,8 @@ import { createClient } from "redis"
 import express from "express"
 import bcrypt from "bcrypt"
 import dotenv from 'dotenv'
+import redisInfo from 'redis-info'
+import client from 'prom-client'
 
 // Load environment variables
 dotenv.config()
@@ -40,6 +42,36 @@ app.use(
     },
   })
 )
+
+// Prometheus metrics
+const collectDefaultMetrics = client.collectDefaultMetrics
+collectDefaultMetrics()
+
+const redisMetrics = new client.Gauge({
+  name: 'redis_info',
+  help: 'Redis info metrics',
+  labelNames: ['metric']
+})
+
+async function collectRedisMetrics() {
+  const info = await redisClient.info()
+  const parsedInfo = redisInfo.parse(info)
+  Object.keys(parsedInfo).forEach(key => {
+    const value = parsedInfo[key]
+    if (typeof value === 'number') {
+      redisMetrics.set({ metric: key }, value)
+    }
+  })
+}
+
+// Collect Redis metrics every 5 seconds
+setInterval(collectRedisMetrics, 5000)
+
+// Expose metrics endpoint
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType)
+  res.end(await client.register.metrics())
+})
 
 // In-memory users store
 const getUsers =  async () => await redisClient.keys('users:*').then(async (keys) => {
@@ -101,7 +133,7 @@ app.get("/dashboard", authMiddleware, (req, res) => {
 })
 
 // Start server
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3333
 app.listen(PORT, () => {
   console.log(`Server started on http://localhost:${PORT}`)
 })
