@@ -134,6 +134,9 @@ app.get("/dashboard", authMiddleware, (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 3333
+const start = performance.now()
 app.listen(PORT, () => {
+  const end = performance.now()
   console.log(`Server started on http://localhost:${PORT}`)
+  console.info(`Startup time: ${end - start}ms`)
 })
