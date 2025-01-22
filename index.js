@@ -74,13 +74,29 @@ app.get('/metrics', async (req, res) => {
 })
 
 // In-memory users store
-const getUsers =  async () => await redisClient.keys('users:*').then(async (keys) => {
-  const userPromises = keys.map(async (key) => {
-    const user = await redisClient.get(key)
-    return JSON.parse(user)
-  })
-  return Promise.all(userPromises)
-})
+const getUsers = async () => {
+  const users = [];
+  let cursor = '0';
+
+  do {
+    // Use the SCAN command to fetch a batch of keys matching the pattern
+    const reply = await redisClient.scan(cursor, 'MATCH', 'users:*', 'COUNT', 100);
+    cursor = reply[0];
+    const keys = reply[1];
+
+    // Fetch and parse user objects for the current batch of keys
+    const userPromises = keys.map(async (key) => {
+      const user = await redisClient.get(key);
+      return JSON.parse(user);
+    });
+
+    // Accumulate the user objects
+    users.push(...await Promise.all(userPromises));
+  } while (cursor !== '0'); // Continue until the cursor returns to '0'
+
+  return users;
+};
+
 
 // Register route
 app.post("/register", async (req, res) => {
