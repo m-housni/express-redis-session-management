@@ -1,26 +1,7 @@
 # express-redis-session-management
 A scalable and secure session management system built with Express.js and Redis, designed for high-performance applications. This project ensures efficient user authentication, protected routes, and session handling with centralized storage. Enhanced with Docker for containerization and integrated with Prometheus and Grafana for real-time monitoring and performance metrics. Ideal for applications requiring robust scalability and advanced session management capabilities.
 
-```mermaid
-graph TD
-    A[User] -->|Login Request| B[Express.js Server]
-    B -->|Authenticate User| C[Redis Session Store]
-    C -->|Store Session Data| B
-    B -->|Protected Routes| D[Application Logic]
-    D -->|Access Resources| E[Database]
-    E -->|Return Data| D
-    D -->|Response| B
-    B -->|Response| A
-
-    subgraph Docker Compose Services
-        F[Redis Container] -->|Stores Session Data| B
-        G[Express.js Container] -->|Handles Requests| A
-        G -->|Depends on| F
-        H[Prometheus Container] -->|Collects Metrics| G
-        H -->|Collects Metrics| F
-        I[Grafana Container] -->|Visualizes Metrics| H
-    end
-```
+![image](https://github.com/user-attachments/assets/079ae5a1-011a-4db9-80d2-f3d6e076de7f)
 
 ## About
 
