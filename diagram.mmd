@@ -1,0 +1,18 @@
+graph TD
+    A[User] -->|Login Request| B[Express.js Server]
+    B -->|Authenticate User| C[Redis Session Store]
+    C -->|Store Session Data| B
+    B -->|Protected Routes| D[Application Logic]
+    D -->|Access Resources| E[Database]
+    E -->|Return Data| D
+    D -->|Response| B
+    B -->|Response| A
+
+    subgraph Docker Compose Services
+        F[Redis Container] -->|Stores Session Data| B
+        G[Express.js Container] -->|Handles Requests| A
+        G -->|Depends on| F
+        H[Prometheus Container] -->|Collects Metrics| G
+        H -->|Collects Metrics| F
+        I[Grafana Container] -->|Visualizes Metrics| H
+    end
